@@ -7,6 +7,7 @@ using System.Linq;
 using AutoMapper;
 using _NetCore.DTO;
 using System;
+using IdentityServer4.Events;
 
 namespace Swagger.Services
 {
@@ -71,32 +72,69 @@ namespace Swagger.Services
             return result.DeletedCount > 0;
         }
 
-        public List<Products> GetFilterProducts(string code, string product, string category, string brand)
+        public GetProducts GetFilterProducts(FilterData filterData)
         {
-            if (code != null && product != null && category != null && brand != null)
+            var builder = Builders<Products>.Filter;
+            var filter = Builders<Products>.Filter.Empty;
+
+            if (filterData.codeProduct != null && filterData.codeProduct != "")
             {
-                return _collection.Find(Products => Products.code == code && Products.name == product && Products.category_id == category && Products.brand_id == brand).ToList();
+                filter = filter & builder.Eq(x => x.code, filterData.codeProduct);
             }
-            else if (code != null && code != "")
+            if (filterData.productName != null && filterData.productName != "")
             {
-                return _collection.Find(Products => Products.code == code).ToList();
+                filter = filter & builder.Eq(x => x.name, filterData.productName);
             }
-            else if (product != null && product != "")
+            if (filterData.categoryId != null && filterData.categoryId != "")
             {
-                return _collection.Find(Products => Products.name == product).ToList();
+                filter = filter & builder.Eq(x => x.category_id, filterData.categoryId);
             }
-            else if (category != null && category != "")
+            if (filterData.brandId != null && filterData.brandId != "")
             {
-                return _collection.Find(Products => Products.category_id == category).ToList();
+                filter = filter & builder.Eq(x => x.brand_id, filterData.brandId);
             }
-            else if (brand != null && brand != "")
+
+            var getProducts = new GetProducts();
+            if (filterData.pagination != null)
             {
-                return _collection.Find(Products => Products.brand_id == brand).ToList();
+                getProducts.Products = _collection.Find(filter).Skip((filterData.pagination.PageNumber - 1) * filterData.pagination.PageSize).Limit(filterData.pagination.PageSize).ToList();
             }
             else
             {
-                return _collection.Find(Products => true).ToList();
+                getProducts.Products = _collection.Find(filter).ToList();
             }
+
+            getProducts.Total = _collection.Find(filter).CountDocuments();
+/*
+            if (filter.pagination != null)
+            {
+                getProducts.Products = _collection.Find(Products => ((filter.codeProduct == null || filter.codeProduct == "") ? true : (filter.codeProduct == Products.code)) &&
+                    ((filter.productName == null || filter.productName == "") ? true : (filter.productName == Products.name)) &&
+                    ((filter.categoryId == null || filter.categoryId == "") ? true : (filter.categoryId == Products.category_id)) &&
+                    ((filter.brandId == null || filter.brandId == "") ? true : (filter.brandId == Products.brand_id))
+                ).Skip((filter.pagination.PageNumber - 1) * filter.pagination.PageSize).Limit(filter.pagination.PageSize).ToList();
+            }
+            else
+            {
+                getProducts.Products = _collection.Find(Products => ((filter.codeProduct == null || filter.codeProduct == "") ? true : (filter.codeProduct == Products.code)) &&
+                    ((filter.productName == null || filter.productName == "") ? true : (filter.productName == Products.name)) &&
+                    ((filter.categoryId == null || filter.categoryId == "") ? true : (filter.categoryId == Products.category_id)) &&
+                    ((filter.brandId == null || filter.brandId == "") ? true : (filter.brandId == Products.brand_id))
+                ).ToList();
+            }
+
+            getProducts.Total = _collection.Find(Products => ((filter.codeProduct == null || filter.codeProduct == "") ? true : (filter.codeProduct == Products.code)) &&
+                ((filter.productName == null || filter.productName == "") ? true : (filter.productName == Products.name)) &&
+                ((filter.categoryId == null || filter.categoryId == "") ? true : (filter.categoryId == Products.category_id)) &&
+                ((filter.brandId == null || filter.brandId == "") ? true : (filter.brandId == Products.brand_id))
+            ).CountDocuments();*/
+            return getProducts;
+/*            return _collection.Find(Products => (
+                ((filter.codeProduct == null || filter.codeProduct == "") ? true : (filter.codeProduct == Products.code)) &&
+                ((filter.productName == null || filter.productName == "") ? true : (filter.productName == Products.name)) &&
+                ((filter.categoryId == null || filter.categoryId == "") ? true : (filter.categoryId == Products.category_id)) &&
+                ((filter.brandId == null || filter.brandId == "") ? true : (filter.brandId == Products.brand_id))
+            )).ToList();*/
         }
 
         public bool UpdateProductImages(UpdateImages UpdateImages)

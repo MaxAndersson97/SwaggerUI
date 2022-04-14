@@ -27,7 +27,7 @@ namespace Swagger.Controller
 
         //[Authorize]
         [HttpPost("/Products/Filter")]
-        public ActionResult<List<Products>> GetFilterProducts(string code, string product, string category, string brand) => _service.GetFilterProducts(code, product, category, brand);
+        public ActionResult<GetProducts> GetFilterProducts([FromBody] FilterData filter) => _service.GetFilterProducts(filter);
 
         //[Authorize]
         [HttpPost]

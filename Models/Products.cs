@@ -16,59 +16,63 @@ namespace Swagger.Models
 
         [BsonElement]
         public string Type_barcode { get; set; }
+
         [BsonElement]
         public string name { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public double cost { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public double price { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         [BsonRepresentation(BsonType.ObjectId)]
         public string category_id { get; set; }
+
         [BsonElement]
         [BsonRepresentation(BsonType.ObjectId)]
-
         public string brand_id { get; set; }
+
         [BsonElement]
         [BsonRepresentation(BsonType.ObjectId)]
-
         public string unit_id { get; set; }
+
         [BsonElement]
         [BsonRepresentation(BsonType.ObjectId)]
-
         public string unit_sale_id { get; set; }
+
         [BsonElement]
         [BsonRepresentation(BsonType.ObjectId)]
-
         public string unit_purchase_id { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public double? TaxNet { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public string tax_method { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public List<product_images>? product_Images { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public string note { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public double? stock_alert { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public string is_variant { get; set; }
-        [BsonElement]
 
+        [BsonElement]
         public string is_active { get; set; }
+
         [BsonElement]
         public string created_at { get; set; }
+
         [BsonElement]
         public string updated_at { get; set; }
+
         [BsonElement]
         public string deleted_at { get; set; }
     }
